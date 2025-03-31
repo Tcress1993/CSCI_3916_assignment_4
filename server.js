@@ -84,14 +84,14 @@ router.route('/movies')
             //if any part of the request body is missing, return a 400 error
             return res.status(400).json({ success: false, msg: 'Please include all required fields.' }); // 400 Bad Request
           }
-          if (actors.length <= 3) {
+          if (actors.length < 3) {
             return res.status(400).json({ success: false, msg: "Please include atleast 3 actors."}); // 400 Bad Request
           }
           const newMoveie = new Movie(req.body); // Create a new movie instance
           await newMoveie.save(); // Save the movie to the database
           res.status(200).json({ success: true, msg: 'Movie added successfully.' }); // 200 OK
         } catch (err) {
-          res.status(500).json({success: false, message: err.message}); // 500 Internal Server Error
+          res.status(500).json({success: false, message: "movie not saved."}); // 500 Internal Server Error
         }
     });
 
