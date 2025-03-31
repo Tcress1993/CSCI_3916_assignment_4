@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const User = require('./Users');
 const Movie = require('./Movies'); // You're not using Movie, consider removing it
-
+require('dotenv').config();
 const app = express();
 app.use(cors());
 app.use(bodyParser.json()); 
@@ -69,10 +69,30 @@ router.post('/signin', async (req, res) => { // Use async/await
 
 router.route('/movies')
     .get(authJwtController.isAuthenticated, async (req, res) => {
-        return res.status(500).json({ success: false, message: 'GET request not supported' });
+      try {
+        const movies = await Movie.find({}); // Fetch all movies
+        res.json({ success: true, movies }); // Respond with the movies
+      } catch(err){
+        res.status(500).json({ success: false, message: 'GET request not supported' });
+      }
+      
     })
     .post(authJwtController.isAuthenticated, async (req, res) => {
-        return res.status(500).json({ success: false, message: 'POST request not supported' });
+        try {
+          const { title, releaseDate, genre, actors } = req.body; // Destructure the request body
+          if (!title || !releaseDate || !genre || !actors) {
+            //if any part of the request body is missing, return a 400 error
+            return res.status(400).json({ success: false, msg: 'Please include all required fields.' }); // 400 Bad Request
+          }
+          if (actors.lenght <= 3) {
+            return res.status(400).json({ success: false, msg: "Please include atleast 3 actors."}); // 400 Bad Request
+          }
+          const newMoveie = new Movie(req.body); // Create a new movie instance
+          await newMoveie.save(); // Save the movie to the database
+          res.status(200).json({ success: true, msg: 'Movie added successfully.' }); // 200 OK
+        } catch (err) {
+          res.status(500).json({success: false, message: err.message}); // 500 Internal Server Error
+        }
     });
 
 app.use('/', router);

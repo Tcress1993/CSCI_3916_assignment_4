@@ -1,11 +1,13 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt'); // Use bcrypt, not bcrypt-nodejs
+require('dotenv').config();
 
 // No need for mongoose.Promise = global.Promise;
 
 const connectDB = async () => {
   try {
+    console.log(process.env.DB); // Log the database connection string
     await mongoose.connect(process.env.DB); // useNewUrlParser and useUnifiedTopology are no longer needed
     console.log("Connected to MongoDB");
   } catch (error) {
