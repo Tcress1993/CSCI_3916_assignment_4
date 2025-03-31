@@ -84,7 +84,7 @@ router.route('/movies')
             //if any part of the request body is missing, return a 400 error
             return res.status(400).json({ success: false, msg: 'Please include all required fields.' }); // 400 Bad Request
           }
-          if (actors.lenght <= 3) {
+          if (actors.length <= 3) {
             return res.status(400).json({ success: false, msg: "Please include atleast 3 actors."}); // 400 Bad Request
           }
           const newMoveie = new Movie(req.body); // Create a new movie instance
