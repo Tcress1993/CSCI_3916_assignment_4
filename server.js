@@ -71,7 +71,7 @@ router.route('/movies')
     .get(authJwtController.isAuthenticated, async (req, res) => {
       try {
         const movies = await Movie.find({}); // Fetch all movies
-        res.json({ success: true, movies }); // Respond with the movies
+        res.status(200).json(movies); // Respond with the movies
       } catch(err){
         res.status(500).json({ success: false, message: 'GET request not supported' });
       }
@@ -89,8 +89,9 @@ router.route('/movies')
           }
           const newMoveie = new Movie(req.body); // Create a new movie instance
           await newMoveie.save(); // Save the movie to the database
-          res.status(201).json({ success: true, msg: 'Movie added successfully.' }); // 200 OK
+          res.status(201).json({ success: true, msg: 'Movie added successfully.', movie: newMovie }); // 200 OK
         } catch (err) {
+          console.error(err); // Log the error for debugging
           res.status(500).json({success: false, message: "movie not saved."}); // 500 Internal Server Error
         }
     });
