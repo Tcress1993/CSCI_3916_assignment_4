@@ -68,7 +68,7 @@ router.post('/signin', async (req, res) => { // Use async/await
 });
 
 router.route('/movies')
-    .get(authJwtController.isAuthenticated, async (req, res) => {
+    .get(async (req, res) => {
       try {
         const movies = await Movie.find({}); // Fetch all movies
         res.status(200).json(movies); // Respond with the movies
@@ -77,7 +77,7 @@ router.route('/movies')
       }
       
     })
-    .post(authJwtController.isAuthenticated, async (req, res) => {
+    .post(async (req, res) => {
         try {
           const { title, releaseDate, genre, actors } = req.body; // Destructure the request body
           if (!title || !releaseDate || !genre || !actors) {
