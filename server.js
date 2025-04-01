@@ -89,7 +89,7 @@ router.route('/movies')
           }
           const newMoveie = new Movie(req.body); // Create a new movie instance
           await newMoveie.save(); // Save the movie to the database
-          res.status(200).json({ success: true, msg: 'Movie added successfully.' }); // 200 OK
+          res.status(201).json({ success: true, msg: 'Movie added successfully.' }); // 200 OK
         } catch (err) {
           res.status(500).json({success: false, message: "movie not saved."}); // 500 Internal Server Error
         }
