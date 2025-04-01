@@ -87,8 +87,8 @@ router.route('/movies')
           if (actors.length < 3) {
             return res.status(400).json({ success: false, msg: "Please include atleast 3 actors."}); // 400 Bad Request
           }
-          const newMoveie = new Movie(req.body); // Create a new movie instance
-          await newMoveie.save(); // Save the movie to the database
+          const newMovie = new Movie(req.body); // Create a new movie instance
+          await newMovie.save(); // Save the movie to the database
           res.status(201).json({ success: true, msg: 'Movie added successfully.', movie: newMovie }); // 200 OK
         } catch (err) {
           console.error(err); // Log the error for debugging
