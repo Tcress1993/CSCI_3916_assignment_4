@@ -87,6 +87,10 @@ router.route('/movies')
           if (actors.length < 3) {
             return res.status(400).json({ success: false, msg: "Please include atleast 3 actors."}); // 400 Bad Request
           }
+          // Check for duplicate movies
+          if (await Movie.findOne({ title })) {
+            return res.status(409).json({ success: false, msg: 'Movie already exists.' }); // 409 Conflict
+          }
           const newMovie = new Movie(req.body); // Create a new movie instance
           await newMovie.save(); // Save the movie to the database
           res.status(201).json({ success: true, msg: 'Movie added successfully.', movie: newMovie }); // 200 OK
@@ -94,6 +98,39 @@ router.route('/movies')
           console.error(err); // Log the error for debugging
           res.status(500).json({success: false, message: "movie not saved."}); // 500 Internal Server Error
         }
+    })
+    .delete(async (req, res) => {
+        try{
+          const {_id} = req.body; // pulls the id from the request body
+          if (!_id) {
+            return res.status(400).json({ success: false, msg: 'Please include the title of the movie to delete.' }); // 400 Bad Request
+          }
+          const deleteMovie = await Movie.findOneAndDelete({_id: _id}); // Find and delete the movie by title
+          if (!deleteMovie) {
+            return res.status(404).json({ success: false, msg: 'Movie not found.' }); // 404 Not Found
+          }
+          res.status(200).json({sucess: true, msg: "Movie deleted successfully."}); //movie deleted successfully
+        } catch(err){
+          res.status(500).json({ success: false, message: 'DELETE request not supported' }); // 500 Internal Server Error
+        }
+    })
+    .put(async (req, res) => {
+      try {
+        const {_id, ...update} = req.body;
+        if (!_id){
+          // No ID provided, return an error
+          res.status(400).json({success: false, msg: "ID is required to update a movie."}); // 400 Bad Request
+        }
+        // Update the movie with the new data
+        const movieUpdates = await Movie.findByIdAndUpdate(_id, {$set: update}, {new: true, runValidators: true});
+        if (!movieUpdates){
+          // Movie not found, return an error
+          res.status(404).json({success: false, msg: "Movie not found."}); // 404 Not Found
+        }
+        res.status(200).json({success: true, msg: "Movie updated successfully.", movie: movieUpdates}); // 200 OK
+      }catch(err){
+        res.status(500).json({success: false, msg: "Movie not updated."}); // 500 Internal Server Error
+      }
     });
 
 app.use('/', router);
