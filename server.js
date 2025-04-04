@@ -110,11 +110,11 @@ router.route('/movies')
     })
     .delete(async (req, res) => {
         try{
-          const {_id} = req.body; // pulls the id from the request body
-          if (!_id) {
+          const {title} = req.body; // pulls the id from the request body
+          if (!title) {
             return res.status(400).json({ success: false, msg: 'Please include the title of the movie to delete.' }); // 400 Bad Request
           }
-          const deleteMovie = await Movie.findOneAndDelete({_id: _id}); // Find and delete the movie by title
+          const deleteMovie = await Movie.findOneAndDelete({title: title}); // Find and delete the movie by title
           if (!deleteMovie) {
             return res.status(404).json({ success: false, msg: 'Movie not found.' }); // 404 Not Found
           }
@@ -125,13 +125,13 @@ router.route('/movies')
     })
     .put(async (req, res) => {
       try {
-        const {_id, ...update} = req.body;
-        if (!_id){
+        const {title, ...update} = req.body;
+        if (title){
           // No ID provided, return an error
           res.status(400).json({success: false, msg: "ID is required to update a movie."}); // 400 Bad Request
         }
         // Update the movie with the new data
-        const movieUpdates = await Movie.findByIdAndUpdate(_id, {$set: update}, {new: true, runValidators: true});
+        const movieUpdates = await Movie.findByIdAndUpdate(title, {$set: update}, {new: true, runValidators: true});
         if (!movieUpdates){
           // Movie not found, return an error
           res.status(404).json({success: false, msg: "Movie not found."}); // 404 Not Found
