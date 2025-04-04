@@ -70,8 +70,17 @@ router.post('/signin', async (req, res) => { // Use async/await
 router.route('/movies')
     .get(async (req, res) => {
       try {
-        const movies = await Movie.find({}); // Fetch all movies
-        res.status(200).json(movies); // Respond with the movies
+        const {title} = req.body; // pulls the title from the request body
+        if (!title){
+          // if the user doesnt chose a title then it will return all movies
+          const movies = await Movie.find({}); // Fetch all movies
+          res.status(200).json(movies); // Respond with the movies
+        }
+        const oneMovie = await Movie.findOne({title: title}); // Find the movie by title
+        if (!oneMovie){
+          res.status(404).json({success: false, msg: "Movie not found."}); // 404 Not Found
+        }
+        res.status(200).json(oneMovie); // Respond with the movie
       } catch(err){
         res.status(500).json({ success: false, message: 'GET request not supported' });
       }
