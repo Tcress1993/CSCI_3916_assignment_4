@@ -6,7 +6,6 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const User = require('./Users');
 const Movie = require('./Movies'); // You're not using Movie, consider removing it
-const reviews = require('./reviews');
 require('dotenv').config();
 const app = express();
 app.use(cors());
@@ -207,7 +206,7 @@ router.route('/review')
             if (!movieId){
                 res.status(400).json({success: false, msg: "No Id entered."});
             }
-            const reviews = await reviews.find({movieId: movieId});
+            const reviews = await Review.find({movieId: movieId});
             res.status(200).json(reviews);
 
         } catch(err){
@@ -220,7 +219,7 @@ router.route('/review')
             if (!movieId || !userName || !review || !rating) {
                 res.status(400).json({success: false, msg: "Please include all required fields."});
             }
-            const newReview = new reviews(req.body);
+            const newReview = new Review(req.body);
             console.log(newReview);
             await newReview.save();
             res.status(201).json({success: true, msg: "Review added successfully.", review: newReview});
@@ -234,7 +233,7 @@ router.route('/review')
             if (!_id){
                 res.status(400).json({success: false, msg: "No Id entered."});
             }
-            const deleteReview = await reviews.findByIdAndDelete(_id);
+            const deleteReview = await Review.findByIdAndDelete(_id);
             if (!deleteReview){
                 res.status(404).json({success: false, msg: "Review not found."});
             }
