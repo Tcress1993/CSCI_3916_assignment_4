@@ -213,7 +213,7 @@ router.route('/review')
             res.status(500).json({success: false, msg: "GET request not supported."});
         }
     })
-    .post(authJwtController.isAuthenticated, async (req, res) => {
+    .post( async (req, res) => {
         try {
             const {movieId, userName, review, rating} = req.body;
             if (!movieId || !userName || !review || !rating) {
