@@ -203,6 +203,7 @@ router.route('/review')
     .get(authJwtController.isAuthenticated, async (req, res) => {
         try {
             const {movieId} = req.body; // pulls the id from the request body
+            console.log(movieId);
             if (!movieId){
                 res.status(400).json({success: false, msg: "No Id entered."});
             }
@@ -213,7 +214,7 @@ router.route('/review')
             res.status(500).json({success: false, msg: "GET request not supported."});
         }
     })
-    .post( async (req, res) => {
+    .post(authJwtController.isAuthenticated, async (req, res) => {
         try {
             const {movieId, userName, review, rating} = req.body;
             if (!movieId || !userName || !review || !rating) {
