@@ -12,7 +12,7 @@ var jwt = require('jsonwebtoken');
 var cors = require('cors');
 var User = require('./Users');
 var Movie = require('./Movies');
-var Review = require('./Reviews');
+var Review = require('./reviews');
 require('dotenv').config();
 var app = express();
 const mongoose = require('mongoose');
